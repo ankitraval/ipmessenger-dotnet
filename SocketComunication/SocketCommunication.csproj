@@ -10,8 +10,9 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>SocketCommunication</RootNamespace>
     <AssemblyName>SocketComunication</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
+    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
@@ -37,18 +38,24 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="SevenZip">
+      <HintPath>..\ReferenceLibraries\SevenZip.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Runtime.Serialization.Formatters.Soap" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Classes\CommunicationManager.cs" />
-    <Compile Include="Classes\MsgHeaderData.cs" />
+    <Compile Include="Classes\Messages\UserInfoMessage.cs" />
+    <Compile Include="Classes\Messages\ReceiveConfirmationMessage.cs" />
+    <Compile Include="Classes\Messages\Message.cs" />
+    <Compile Include="Classes\Messages\SignonMessage.cs" />
+    <Compile Include="Classes\UserInfo.cs" />
+    <Compile Include="Classes\Messages\MsgHeaderData.cs" />
     <Compile Include="Interfaces\ICommunicationManager.cs" />
+    <Compile Include="Interfaces\IObserver.cs" />
     <Compile Include="Interfaces\ISignonManager.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -4,8 +4,8 @@ using System.Text;
 
 namespace SocketCommunication.Interfaces
 {
-	public interface ISignonManager
+	public interface IObserver
 	{
-		void SubscribeForUserInfos(IObserver observer);
+		void Notify(object data);
 	}
 }
