@@ -13,6 +13,7 @@ namespace SocketCommunication.Classes
 		#region Data Members
 
 		internal string _IPAddress;
+		internal DateTime _ReceiptTime;
 		private string _Text;
 
 		#endregion
@@ -25,6 +26,16 @@ namespace SocketCommunication.Classes
 			get
 			{
 				return _IPAddress;
+			}
+		}
+		#endregion
+
+		#region public DateTime ReceiptTime
+		public DateTime ReceiptTime
+		{
+			get
+			{
+				return _ReceiptTime;
 			}
 		}
 		#endregion

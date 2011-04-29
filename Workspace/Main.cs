@@ -60,8 +60,9 @@ namespace Workspace
 			IPMessengerNotifyIcon.Icon = new System.Drawing.Icon("IPMessengerIcon.ico");
 			IPMessengerNotifyIcon.Text = "IPMessenger";
 			IPMessengerNotifyIcon.Visible = true;
-			IPMessengerNotifyIcon.DoubleClick += new EventHandler(notifyIcon_DoubleClick);
 			IPMessengerNotifyIcon.ContextMenuStrip = contextMenu;
+			IPMessengerNotifyIcon.DoubleClick += new EventHandler(IPMessengerNotifyIcon_DoubleClick);
+			IPMessengerNotifyIcon.BalloonTipClicked += new EventHandler(IPMessengerNotifyIcon_BalloonTipClicked);
 		}
 		#endregion
 
@@ -72,11 +73,50 @@ namespace Workspace
 		}
 		#endregion
 
-		#region private void notifyIcon_DoubleClick(object sender, EventArgs e)
-		private void notifyIcon_DoubleClick(object sender, EventArgs e)
+		#region private void IPMessengerNotifyIcon_DoubleClick(object sender, EventArgs e)
+		private void IPMessengerNotifyIcon_DoubleClick(object sender, EventArgs e)
 		{
 			SendMenuForm sendMenuForm = new SendMenuForm();
 			sendMenuForm.Show();
+		}
+		#endregion
+
+		#region void IPMessengerNotifyIcon_BalloonTipClicked(object sender, EventArgs e)
+		void IPMessengerNotifyIcon_BalloonTipClicked(object sender, EventArgs e)
+		{
+			if (IPMessengerNotifyIcon.Tag == null || (IPMessengerNotifyIcon.Tag is TextMessageData) == false)
+			{
+				return;
+			}
+			TextMessageData textMessageData = IPMessengerNotifyIcon.Tag as TextMessageData;
+			if (textMessageData == null)
+			{
+				return;
+			}
+			UserInfo userInfo = SocketCommService.GetUserInfo(textMessageData.IPAddress);
+			if (userInfo == null)
+			{
+				return;
+			}
+			ContextMenuStrip contextMenuStrip = IPMessengerNotifyIcon.ContextMenuStrip;
+			if (contextMenuStrip != null && contextMenuStrip.Items.ContainsKey("Received Messages"))
+			{
+				ToolStripMenuItem receivedMessagesToolStripMenuItem = contextMenuStrip.Items["Received Messages"] as ToolStripMenuItem;
+				if (receivedMessagesToolStripMenuItem != null)
+				{
+					string key = string.Format("{0} at {1}", userInfo.UserName, textMessageData.ReceiptTime);
+					int index = receivedMessagesToolStripMenuItem.DropDownItems.IndexOfKey(key);
+					if (index >= 0)
+					{
+						receivedMessagesToolStripMenuItem.DropDownItems.RemoveAt(index);
+						if (receivedMessagesToolStripMenuItem.DropDownItems.Count == 0)
+						{
+							contextMenuStrip.Items.Remove(receivedMessagesToolStripMenuItem);
+						}
+					}
+				}
+			}
+			MessageBox.Show(textMessageData.Text, string.Format("Received From {0} at {1}", userInfo.UserName, textMessageData.ReceiptTime));
 		}
 		#endregion
 
@@ -92,12 +132,10 @@ namespace Workspace
 			{
 				return;
 			}
-			string balloonToolTipText = string.Format("Received message from {0}", userInfo.UserName);
-			IPMessengerNotifyIcon.ShowBalloonTip(1000, "Received Message", balloonToolTipText, ToolTipIcon.Info);
 			ContextMenuStrip contextMenuStrip = IPMessengerNotifyIcon.ContextMenuStrip;
 			if (contextMenuStrip == null)
 			{
-				MessageBox.Show(textMessageData.Text, string.Format("Received From {0}", userInfo.UserName));
+				MessageBox.Show(textMessageData.Text, string.Format("Received From {0} at {1}", userInfo.UserName, textMessageData.ReceiptTime));
 				return;
 			}
 			ToolStripMenuItem receivedMessagesToolStripMenuItem;
@@ -112,14 +150,20 @@ namespace Workspace
 			{
 				receivedMessagesToolStripMenuItem = contextMenuStrip.Items["Received Messages"] as ToolStripMenuItem;
 			}
-			ToolStripItem item = receivedMessagesToolStripMenuItem.DropDownItems.Add(userInfo.UserName);
-			item.Tag = textMessageData;
-			item.Click += new EventHandler(item_Click);
+			string key = string.Format("{0} at {1}", userInfo.UserName, textMessageData.ReceiptTime);
+			ToolStripItem toolStripItem = receivedMessagesToolStripMenuItem.DropDownItems.Add(key);
+			toolStripItem.Name = key;
+			toolStripItem.Tag = textMessageData;
+			toolStripItem.Click += new EventHandler(ToolStripItem_Click);
+
+			IPMessengerNotifyIcon.Tag = textMessageData;
+			string balloonToolTipText = string.Format("Received message from {0}", userInfo.UserName);
+			IPMessengerNotifyIcon.ShowBalloonTip(1000, "Received Message", balloonToolTipText, ToolTipIcon.Info);
 		}
 		#endregion
 
-		#region void item_Click(object sender, EventArgs e)
-		void item_Click(object sender, EventArgs e)
+		#region void ToolStripItem_Click(object sender, EventArgs e)
+		void ToolStripItem_Click(object sender, EventArgs e)
 		{
 			if (sender == null || !(sender is ToolStripItem))
 			{
@@ -138,7 +182,7 @@ namespace Workspace
 					owner.DropDownItems.Remove(item);
 					if (owner.DropDownItems.Count == 0)
 					{
-						if (owner.Owner != null )
+						if (owner.Owner != null)
 						{
 							ToolStrip toolStrip = owner.Owner;
 							toolStrip.Items.Remove(owner);
@@ -158,8 +202,7 @@ namespace Workspace
 			{
 				return;
 			}
-			MessageBox.Show(textMessageData.Text, string.Format("Received From {0}", userInfo.UserName));
-
+			MessageBox.Show(textMessageData.Text, string.Format("Received From {0} at {1}", userInfo.UserName, textMessageData.ReceiptTime));
 			if (item.OwnerItem != null && item.OwnerItem is ToolStripMenuItem)
 			{
 				ToolStripMenuItem owner = item.OwnerItem as ToolStripMenuItem;
