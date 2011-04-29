@@ -8,47 +8,82 @@ namespace SocketCommunication.Classes
 {
 	internal static class SocketHelper
 	{
-		#region internal static Socket GetUdpMulticastSocketForSender(IPEndPoint groupIpEndPoint)
-		internal static Socket GetUdpMulticastSocketForSender(IPEndPoint groupIpEndPoint)
+		#region internal static List<Socket> GetUdpMulticastSocketForSender(IPEndPoint groupIpEndPoint)
+		internal static List<Socket> GetUdpMulticastSocketForSender(IPEndPoint groupIpEndPoint)
 		{
-			Socket multiCastSocket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
+			List<Socket> multiCastSockets = new List<Socket>();
 
 			try
 			{
-				IPEndPoint ipep = new IPEndPoint(IPAddress.Any, 0);
-				multiCastSocket.Bind(ipep);
+				string hostName = Dns.GetHostName();
+				IPHostEntry hostEntry = Dns.GetHostEntry(hostName);
+				if (hostEntry.AddressList != null && hostEntry.AddressList.Length > 0)
+				{
+					for (int i = 0; i < hostEntry.AddressList.Length; i++)
+					{
+						IPAddress localIP = hostEntry.AddressList[i];
+						if (localIP.AddressFamily == AddressFamily.InterNetwork)
+						{
+							Socket multiCastSocket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
 
-				multiCastSocket.SetSocketOption(SocketOptionLevel.IP, SocketOptionName.AddMembership, new MulticastOption(groupIpEndPoint.Address, IPAddress.Any));
-				multiCastSocket.MulticastLoopback = false;
+							IPEndPoint ipep = new IPEndPoint(localIP, 0);
+							multiCastSocket.Bind(ipep);
+
+							multiCastSocket.SetSocketOption(SocketOptionLevel.IP, SocketOptionName.AddMembership, new MulticastOption(groupIpEndPoint.Address, localIP));
+							//multiCastSocket.SetSocketOption(SocketOptionLevel.IP, SocketOptionName.MulticastLoopback, false);
+							multiCastSockets.Add(multiCastSocket);
+						}
+					}
+				}
 			}
 			catch (Exception ex)
 			{
 				Console.WriteLine(ex.Message);
 			}
 
-			return multiCastSocket;
+			return multiCastSockets;
 		}
 		#endregion
 
-		#region internal static Socket GetUdpMulticastSocketForReceiver(IPEndPoint groupIpEndPoint)
-		internal static Socket GetUdpMulticastSocketForReceiver(IPEndPoint groupIpEndPoint)
+		#region internal static List<Socket> GetUdpMulticastSocketForReceiver(IPEndPoint groupIpEndPoint)
+		internal static List<Socket> GetUdpMulticastSocketForReceiver(IPEndPoint groupIpEndPoint)
 		{
-			Socket multiCastSocket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
+			List<Socket> multiCastSockets = new List<Socket>();
 
 			try
 			{
-				IPEndPoint ipep = new IPEndPoint(IPAddress.Any, groupIpEndPoint.Port);
+				string hostName;
+				IPHostEntry hostEntry;
 
-				multiCastSocket.Bind(ipep);
+				hostName = Dns.GetHostName();
+				hostEntry = Dns.GetHostEntry(hostName);
 
-				multiCastSocket.SetSocketOption(SocketOptionLevel.IP, SocketOptionName.AddMembership, new MulticastOption(groupIpEndPoint.Address, IPAddress.Any));
+				if (hostEntry.AddressList != null && hostEntry.AddressList.Length > 0)
+				{
+					for (int i = 0; i < hostEntry.AddressList.Length; i++)
+					{
+						IPAddress localIP = hostEntry.AddressList[i];
+						if (localIP.AddressFamily == AddressFamily.InterNetwork)
+						{
+							Socket multiCastSocket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
+
+							IPEndPoint ipep = new IPEndPoint(localIP, groupIpEndPoint.Port);
+
+							multiCastSocket.Bind(ipep);
+
+							multiCastSocket.SetSocketOption(SocketOptionLevel.IP, SocketOptionName.AddMembership, new MulticastOption(groupIpEndPoint.Address, localIP));
+
+							multiCastSockets.Add(multiCastSocket);
+						}
+					}
+				}
 			}
 			catch (Exception ex)
 			{
 				Console.WriteLine(ex.Message);
 			}
 
-			return multiCastSocket;
+			return multiCastSockets;
 		}
 		#endregion
 

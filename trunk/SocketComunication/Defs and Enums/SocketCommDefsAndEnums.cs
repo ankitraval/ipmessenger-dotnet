@@ -1,21 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 
 namespace SocketCommunication.DefsAndEnums
 {
-	internal class SocketCommDefs
+	class SocketCommDefs
 	{
-		public const string MulticastGroupIP = "224.168.100.2";
+		public const string MulticastGroupIP = "224.101.19.88";
 		public const int MulticastGroupPort = 19880;
 	}
 
-	internal enum EMsgDataType
+	enum EMsgDataType
 	{
 		Default,
 		Signon,
-		SignonReply,
 		ReceiveConfirmation,
+		UserInfo,
 	}
 }

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using SocketCommunication.Interfaces;
 
@@ -23,17 +22,28 @@ namespace SocketCommunication.Classes
 		}
 		#endregion
 
-		#region public static ISignonManager GetSignonManager()
-		public static ISignonManager GetSignonManager()
+		#region internal static ISignonManager GetSignonManager()
+		internal static ISignonManager GetSignonManager()
 		{
 			return SignonManagerInstance;
 		}
 		#endregion
 
-		#region public static ICommunicationManager GetCommunicationManager()
-		public static ICommunicationManager GetCommunicationManager()
+		#region internal static ICommunicationManager GetCommunicationManager()
+		internal static ICommunicationManager GetCommunicationManager()
 		{
 			return CommunicationManagerInstance;
+		}
+		#endregion
+
+		#region public static void SubscribeForUSerInfos(IObserver observer)
+		public static void SubscribeForUSerInfos(IObserver observer)
+		{
+			if (observer == null)
+			{
+				return;
+			}
+			SignonManagerInstance.SubscribeForUserInfos(observer);
 		}
 		#endregion
 	}
