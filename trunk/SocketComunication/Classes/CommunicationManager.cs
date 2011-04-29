@@ -82,6 +82,7 @@ namespace SocketCommunication.Classes
 		private Thread UdpListenerThread;
 		private Thread UdpSenderThread;
 		private List<int> ReceivedConfirmationList;
+		private List<IObserver> TextMessageObservers = new List<IObserver>();
 
 		#endregion
 
@@ -452,6 +453,32 @@ namespace SocketCommunication.Classes
 		}
 		#endregion
 
+		#region public void SendTextMessage(string remoteIPString, string text)
+		public void SendTextMessage(string remoteIPString, string text)
+		{
+			if (remoteIPString == null || remoteIPString.Trim() == string.Empty)
+			{
+				return;
+			}
+			IPAddress remoteIP;
+			if (IPAddress.TryParse(remoteIPString, out remoteIP) == false)
+			{
+				return;
+			}
+			if (remoteIP == null || remoteIP == IPAddress.None)
+			{
+				return;
+			}
+			IPEndPoint receiverEndPoint = new IPEndPoint(remoteIP, MulticastGroupIpEndPoint.Port);
+
+			Message message = new TextMessage(text);
+
+			Socket udpSocket = SocketHelper.GetUdpSocketForSender();
+
+			SendMessage(udpSocket, receiverEndPoint, message);
+		}
+		#endregion
+
 		#endregion
 
 		#region Process Methdods
@@ -506,6 +533,21 @@ namespace SocketCommunication.Classes
 						SignonManager.SignonMgr.ProcessUserInfoMessage(userInfoMessage.UserInfo, remoteIP, message.HeaderData.IsReply);
 					}
 					break;
+				case EMsgDataType.Text:
+					{
+						if ((message is TextMessage) == false || remoteIP == IPAddress.None)
+						{
+							break;
+						}
+						TextMessage textMessage = message as TextMessage;
+						if (textMessage == null)
+						{
+							break;
+						}
+						textMessage.TextMessageData._IPAddress = remoteIP.ToString();
+						ProcessTextMessage(textMessage.TextMessageData);
+					}
+					break;
 			}
 		}
 		#endregion
@@ -517,6 +559,39 @@ namespace SocketCommunication.Classes
 			Console.WriteLine("Transmission failed for {0} message - RefNo : {1}", msgHeaderData.MsgDataType, msgHeaderData.RefNo);
 		}
 		#endregion
+
+		#region private void ProcessTextMessage(TextMessageData textMessageData)
+		private void ProcessTextMessage(TextMessageData textMessageData)
+		{
+			lock (TextMessageObservers)
+			{
+				if (TextMessageObservers == null || TextMessageObservers.Count <= 0)
+				{
+					return;
+				}
+				foreach (IObserver observer in TextMessageObservers)
+				{
+					observer.Notify(textMessageData);
+				}
+			}
+		}
+		#endregion
+
+		#endregion
+
+		#region ICommunicationManager Members
+
+		public void SubscribeForTextMessages(IObserver observer)
+		{
+			lock (TextMessageObservers)
+			{
+				if (observer == null || TextMessageObservers.Contains(observer))
+				{
+					return;
+				}
+				TextMessageObservers.Add(observer);
+			}
+		}
 
 		#endregion
 	}

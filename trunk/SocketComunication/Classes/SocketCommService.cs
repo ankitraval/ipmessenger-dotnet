@@ -46,5 +46,16 @@ namespace SocketCommunication.Classes
 			SignonManagerInstance.SubscribeForUserInfos(observer);
 		}
 		#endregion
+
+		#region public static void SubscribeForTextMessages(IObserver observer)
+		public static void SubscribeForTextMessages(IObserver observer)
+		{
+			if (observer == null)
+			{
+				return;
+			}
+			CommunicationManagerInstance.SubscribeForTextMessages(observer);
+		}
+		#endregion
 	}
 }

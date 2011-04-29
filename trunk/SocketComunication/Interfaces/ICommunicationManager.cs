@@ -7,5 +7,6 @@ namespace SocketCommunication.Interfaces
 {
 	public interface ICommunicationManager
 	{
+		void SubscribeForTextMessages(IObserver observer);
 	}
 }
