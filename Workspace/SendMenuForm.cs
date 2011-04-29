@@ -7,6 +7,8 @@ using System.Text;
 using System.Windows.Forms;
 using SocketCommunication.Interfaces;
 using SocketCommunication.Classes;
+using System.Threading;
+using System.Text.RegularExpressions;
 
 namespace Workspace
 {
@@ -167,7 +169,7 @@ namespace Workspace
 		#region private void UpdateMemberCount()
 		private void UpdateMemberCount()
 		{
-			MembersLabel.Text = string.Format("Members\n{0}", SendMenuSourceDataTable.Rows.Count);
+			MembersLabel.Text = string.Format("Members\n{0}", SocketCommService.GetUserInfoCount());
 		}
 		#endregion
 
@@ -211,5 +213,47 @@ namespace Workspace
 		#endregion
 
 		#endregion
+
+		#region internal void SelectMenuEntry(string ipAddressString)
+		internal void SelectMenuEntry(string ipAddressString)
+		{
+			int noOfUsers = SocketCommService.GetUserInfoCount();
+			while (SendMenuSourceDataTable.Rows.Count < noOfUsers)
+			{
+				//Wait
+				Thread.Sleep(100);
+			}
+			string filterExpression = string.Format("{0} = '{1}'", IPAddress, ipAddressString);
+			DataRow[] dataRows = SendMenuSourceDataTable.Select(filterExpression);
+			if (dataRows == null || dataRows.Length == 0)
+			{
+				return;
+			}
+			MenuGridView.ClearSelection();
+			foreach (DataRow dataRow in dataRows)
+			{
+				foreach (DataGridViewRow dataGridViewRow in MenuGridView.Rows)
+				{
+					if ((dataGridViewRow.DataBoundItem as DataRowView).Row == dataRow)
+					{
+						dataGridViewRow.Selected = true;
+					}
+				}
+			}
+		}
+		#endregion
+
+		#region internal void PopulateText(string text)
+		internal void PopulateText(string text)
+		{
+			if (text == null)
+			{
+				return;
+			}
+			Regex regex = new Regex("^", RegexOptions.Compiled | RegexOptions.Multiline);
+			regex.Replace(text, ">");
+		}
+		#endregion
+
 	}
 }

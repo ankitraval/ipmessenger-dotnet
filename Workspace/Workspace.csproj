@@ -70,6 +70,12 @@
     <Compile Include="MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="ReceivedMessageForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ReceivedMessageForm.designer.cs">
+      <DependentUpon>ReceivedMessageForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="SendMenuForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -90,6 +96,9 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="ReceivedMessageForm.resx">
+      <DependentUpon>ReceivedMessageForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="SendMenuForm.resx">
       <DependentUpon>SendMenuForm.cs</DependentUpon>
     </EmbeddedResource>

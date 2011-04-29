@@ -13,5 +13,7 @@ namespace SocketCommunication.Interfaces
 		Classes.UserInfo GetUserInfo(string remoteIPString);
 
 		void Refresh();
+
+		int GetUserInfoCount();
 	}
 }

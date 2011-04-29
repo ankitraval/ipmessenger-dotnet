@@ -180,6 +180,8 @@ namespace SocketCommunication.Classes
 						{
 							break;
 						}
+						//Wait
+						Thread.Sleep(100);
 					}
 
 					remoteEP = new IPEndPoint(IPAddress.Any, 0);

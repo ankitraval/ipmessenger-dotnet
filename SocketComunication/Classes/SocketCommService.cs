@@ -101,5 +101,13 @@ namespace SocketCommunication.Classes
 			return SignonManagerInstance.GetUserInfo(remoteIPString);
 		}
 		#endregion
+
+		#region public static int GetUserInfoCount()
+		public static int GetUserInfoCount()
+		{
+			return SignonManagerInstance.GetUserInfoCount();
+		}
+		#endregion
+
 	}
 }

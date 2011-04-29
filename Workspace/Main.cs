@@ -5,6 +5,7 @@ using System.IO;
 using SocketCommunication.Interfaces;
 using SocketCommunication.Classes;
 using System.Threading;
+using TimerControl = System.Windows.Forms.Timer;
 
 namespace Workspace
 {
@@ -35,6 +36,7 @@ namespace Workspace
 				SingletonInstance = new CMain();
 			}
 			SingletonInstance.InitializeNotifyIcon();
+			SingletonInstance.InitializeUserCountTimer();
 			SocketCommService.SubscribeForTextMessages(SingletonInstance);
 		}
 		#endregion
@@ -63,6 +65,26 @@ namespace Workspace
 			IPMessengerNotifyIcon.ContextMenuStrip = contextMenu;
 			IPMessengerNotifyIcon.DoubleClick += new EventHandler(IPMessengerNotifyIcon_DoubleClick);
 			IPMessengerNotifyIcon.BalloonTipClicked += new EventHandler(IPMessengerNotifyIcon_BalloonTipClicked);
+		}
+		#endregion
+
+		#region private void InitializeUserCountTimer()
+		private void InitializeUserCountTimer()
+		{
+			TimerControl timer = new TimerControl();
+			timer.Tick += new EventHandler(UserCountTimer_Tick);
+			timer.Interval = 1000;
+			timer.Enabled = true;
+			timer.Start();
+		}
+		#endregion
+
+		#region void UserCountTimer_Tick(object sender, EventArgs e)
+		void UserCountTimer_Tick(object sender, EventArgs e)
+		{
+			int userCount = SocketCommService.GetUserInfoCount();
+			IPMessengerNotifyIcon.Text = string.Format("IPMessenger({0})", userCount);
+			Console.WriteLine("User count = {0}", userCount);
 		}
 		#endregion
 
@@ -116,7 +138,9 @@ namespace Workspace
 					}
 				}
 			}
-			MessageBox.Show(textMessageData.Text, string.Format("Received From {0} at {1}", userInfo.UserName, textMessageData.ReceiptTime));
+			//MessageBox.Show(textMessageData.Text, string.Format("Received From {0} at {1}", userInfo.UserName, textMessageData.ReceiptTime));
+			ReceivedMessageForm receivedMEssageForm = new ReceivedMessageForm(textMessageData, userInfo);
+			receivedMEssageForm.Show();
 		}
 		#endregion
 
@@ -135,7 +159,9 @@ namespace Workspace
 			ContextMenuStrip contextMenuStrip = IPMessengerNotifyIcon.ContextMenuStrip;
 			if (contextMenuStrip == null)
 			{
-				MessageBox.Show(textMessageData.Text, string.Format("Received From {0} at {1}", userInfo.UserName, textMessageData.ReceiptTime));
+				//MessageBox.Show(textMessageData.Text, string.Format("Received From {0} at {1}", userInfo.UserName, textMessageData.ReceiptTime));
+				ReceivedMessageForm receivedMEssageForm = new ReceivedMessageForm(textMessageData, userInfo);
+				receivedMEssageForm.Show();
 				return;
 			}
 			ToolStripMenuItem receivedMessagesToolStripMenuItem;
@@ -202,7 +228,9 @@ namespace Workspace
 			{
 				return;
 			}
-			MessageBox.Show(textMessageData.Text, string.Format("Received From {0} at {1}", userInfo.UserName, textMessageData.ReceiptTime));
+			//MessageBox.Show(textMessageData.Text, string.Format("Received From {0} at {1}", userInfo.UserName, textMessageData.ReceiptTime));
+			ReceivedMessageForm receivedMEssageForm = new ReceivedMessageForm(textMessageData, userInfo);
+			receivedMEssageForm.Show();
 			if (item.OwnerItem != null && item.OwnerItem is ToolStripMenuItem)
 			{
 				ToolStripMenuItem owner = item.OwnerItem as ToolStripMenuItem;
