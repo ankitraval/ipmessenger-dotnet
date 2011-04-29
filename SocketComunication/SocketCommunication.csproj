@@ -48,6 +48,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Classes\CommunicationManager.cs" />
+    <Compile Include="Classes\TextMessageData.cs" />
+    <Compile Include="Classes\Messages\TextMessage.cs" />
     <Compile Include="Classes\Messages\UserInfoMessage.cs" />
     <Compile Include="Classes\Messages\ReceiveConfirmationMessage.cs" />
     <Compile Include="Classes\Messages\Message.cs" />

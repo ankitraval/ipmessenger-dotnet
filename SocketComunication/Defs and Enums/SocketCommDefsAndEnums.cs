@@ -16,5 +16,6 @@ namespace SocketCommunication.DefsAndEnums
 		Signon,
 		ReceiveConfirmation,
 		UserInfo,
+		Text,
 	}
 }
