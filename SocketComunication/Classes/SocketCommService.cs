@@ -11,6 +11,7 @@ namespace SocketCommunication.Classes
 
 		private static ISignonManager SignonManagerInstance = null;
 		private static ICommunicationManager CommunicationManagerInstance = null;
+		public static readonly object ObserverClearCacheMessageData = "Clear";
 
 		#endregion
 
@@ -36,14 +37,25 @@ namespace SocketCommunication.Classes
 		}
 		#endregion
 
-		#region public static void SubscribeForUSerInfos(IObserver observer)
-		public static void SubscribeForUSerInfos(IObserver observer)
+		#region public static void SubscribeForUserInfos(IObserver observer)
+		public static void SubscribeForUserInfos(IObserver observer)
 		{
 			if (observer == null)
 			{
 				return;
 			}
 			SignonManagerInstance.SubscribeForUserInfos(observer);
+		}
+		#endregion
+
+		#region public static void UnsubscribeForUserInfos(IObserver observer)
+		public static void UnsubscribeForUserInfos(IObserver observer)
+		{
+			if (observer == null)
+			{
+				return;
+			}
+			SignonManagerInstance.UnsubscribeForUserInfos(observer);
 		}
 		#endregion
 
@@ -55,6 +67,38 @@ namespace SocketCommunication.Classes
 				return;
 			}
 			CommunicationManagerInstance.SubscribeForTextMessages(observer);
+		}
+		#endregion
+
+		#region public static void UnsubscribeForTextMessages(IObserver observer)
+		public static void UnsubscribeForTextMessages(IObserver observer)
+		{
+			if (observer == null)
+			{
+				return;
+			}
+			CommunicationManagerInstance.UnsubscribeForTextMessages(observer);
+		}
+		#endregion
+
+		#region public static void SendTextMessage(string remoteIPString, string text)
+		public static void SendTextMessage(string remoteIPString, string text)
+		{
+			CommunicationManagerInstance.SendTextMessage(remoteIPString, text);
+		}
+		#endregion
+
+		#region public static void RefreshSignonService()
+		public static void RefreshSignonService()
+		{
+			SignonManagerInstance.Refresh();
+		}
+		#endregion
+
+		#region public static UserInfo GetUserInfo(string remoteIPString)
+		public static UserInfo GetUserInfo(string remoteIPString)
+		{
+			return SignonManagerInstance.GetUserInfo(remoteIPString);
 		}
 		#endregion
 	}

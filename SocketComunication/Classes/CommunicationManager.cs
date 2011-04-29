@@ -581,6 +581,7 @@ namespace SocketCommunication.Classes
 
 		#region ICommunicationManager Members
 
+		#region public void SubscribeForTextMessages(IObserver observer)
 		public void SubscribeForTextMessages(IObserver observer)
 		{
 			lock (TextMessageObservers)
@@ -592,6 +593,21 @@ namespace SocketCommunication.Classes
 				TextMessageObservers.Add(observer);
 			}
 		}
+		#endregion
+
+		#region public void UnsubscribeForTextMessages(IObserver observer)
+		public void UnsubscribeForTextMessages(IObserver observer)
+		{
+			lock (TextMessageObservers)
+			{
+				if (observer == null || TextMessageObservers.Contains(observer) == false)
+				{
+					return;
+				}
+				TextMessageObservers.Remove(observer);
+			}
+		}
+		#endregion
 
 		#endregion
 	}

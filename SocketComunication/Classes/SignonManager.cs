@@ -18,6 +18,7 @@ namespace SocketCommunication.Classes
 		private List<IObserver> Observers = new List<IObserver>();
 		private Hashtable UserInfos = new Hashtable();
 		private static CommunicationManager CommMgr = CommunicationManager.CommMgr;
+
 		#endregion
 
 		#region private SignonManager()
@@ -52,7 +53,7 @@ namespace SocketCommunication.Classes
 			}
 		}
 		#endregion
-		
+
 		#region Process Methods
 
 		#region internal void ProcessSignonMessage(IPAddress remoteIP, bool IsReply)
@@ -90,9 +91,9 @@ namespace SocketCommunication.Classes
 			}
 			lock (UserInfos.SyncRoot)
 			{
-				if(UserInfos[userInfo.IPAddress] == null)
+				if (UserInfos[userInfo.IPAddress] == null)
 				{
-					UserInfos[userInfo.IPAddress]  = userInfo;
+					UserInfos[userInfo.IPAddress] = userInfo;
 					NotifyObservers(userInfo);
 				}
 			}
@@ -142,6 +143,60 @@ namespace SocketCommunication.Classes
 					}
 				}
 			}
+		}
+		#endregion
+
+		#region public void UnsubscribeForUserInfos(IObserver observer)
+		public void UnsubscribeForUserInfos(IObserver observer)
+		{
+			lock (Observers)
+			{
+				if (observer == null || Observers.Contains(observer) == false)
+				{
+					return;
+				}
+				Observers.Remove(observer);
+			}
+		}
+		#endregion
+
+		#region public UserInfo GetUserInfo(string remoteIPString)
+		public UserInfo GetUserInfo(string remoteIPString)
+		{
+			if (remoteIPString == null || remoteIPString.Trim() == string.Empty)
+			{
+				return null;
+			}
+			lock (UserInfos.SyncRoot)
+			{
+				if (UserInfos[remoteIPString] == null)
+				{
+					return null;
+				}
+				else
+				{
+					return UserInfos[remoteIPString] as UserInfo;
+				}
+			}
+		}
+		#endregion
+
+		#region public void Refresh()
+		public void Refresh()
+		{
+			lock (Observers)
+			{
+				if (Observers == null || Observers.Count <= 0)
+				{
+					return;
+				}
+				foreach (IObserver observer in Observers)
+				{
+					observer.Notify(SocketCommService.ObserverClearCacheMessageData);
+				}
+			}
+			UserInfos.Clear();
+			CommMgr.SendSignOn();
 		}
 		#endregion
 
