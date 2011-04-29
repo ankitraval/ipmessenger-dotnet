@@ -14,7 +14,6 @@ namespace SocketCommunication.Classes
 		#region Data Members
 
 		private static SignonManager s_Instance = null;
-		private List<string> ReceivedSignOnIPs = new List<string>();
 		private List<IObserver> Observers = new List<IObserver>();
 		private Hashtable UserInfos = new Hashtable();
 		private static CommunicationManager CommMgr = CommunicationManager.CommMgr;
@@ -64,13 +63,6 @@ namespace SocketCommunication.Classes
 				return;
 			}
 			string message = remoteIP.ToString();
-			lock (ReceivedSignOnIPs)
-			{
-				if (ReceivedSignOnIPs.Contains(message) == false)
-				{
-					ReceivedSignOnIPs.Add(message);
-				}
-			}
 			if (IsReply == false)
 			{
 				CommMgr.SendSignOnReply(remoteIP);
@@ -199,6 +191,14 @@ namespace SocketCommunication.Classes
 			CommMgr.SendSignOn();
 		}
 		#endregion
+
+		#region public int GetUserInfoCount()
+		public int GetUserInfoCount()
+		{
+			return UserInfos.Count;
+		}
+		#endregion
+
 
 		#endregion
 	}

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Windows.Forms;
 using System.IO;
-using SocketCommunication.Interfaces;
 
 namespace Workspace
 {
