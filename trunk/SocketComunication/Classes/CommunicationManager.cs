@@ -545,6 +545,7 @@ namespace SocketCommunication.Classes
 							break;
 						}
 						textMessage.TextMessageData._IPAddress = remoteIP.ToString();
+						textMessage.TextMessageData._ReceiptTime = DateTime.Now;
 						ProcessTextMessage(textMessage.TextMessageData);
 					}
 					break;
