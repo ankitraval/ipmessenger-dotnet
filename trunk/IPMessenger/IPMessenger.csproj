@@ -5,18 +5,16 @@
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{514413B4-5FE6-4C3F-9543-48E102DED96E}</ProjectGuid>
-    <OutputType>Library</OutputType>
+    <ProjectGuid>{DB982610-C41F-4F42-8968-552672BD1041}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>SocketCommunication</RootNamespace>
-    <AssemblyName>SocketComunication</AssemblyName>
+    <RootNamespace>IPMessenger</RootNamespace>
+    <AssemblyName>IPMessenger</AssemblyName>
     <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
-    <TargetFrameworkProfile>
-    </TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
+    <PlatformTarget>x86</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -35,36 +33,48 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <StartupObject />
+    <ApplicationIcon>IPMessengerIcon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="SevenZip">
-      <HintPath>..\ReferenceLibraries\SevenZip.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
-    <Reference Include="System.Runtime.Serialization.Formatters.Soap" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Classes\CommunicationManager.cs" />
-    <Compile Include="Classes\TextMessageData.cs" />
-    <Compile Include="Classes\Messages\TextMessage.cs" />
-    <Compile Include="Classes\Messages\UserInfoMessage.cs" />
-    <Compile Include="Classes\Messages\ReceiveConfirmationMessage.cs" />
-    <Compile Include="Classes\Messages\Message.cs" />
-    <Compile Include="Classes\Messages\SignonMessage.cs" />
-    <Compile Include="Classes\UserInfo.cs" />
-    <Compile Include="Classes\Messages\MsgHeaderData.cs" />
-    <Compile Include="Interfaces\ICommunicationManager.cs" />
-    <Compile Include="Interfaces\IObserver.cs" />
-    <Compile Include="Interfaces\ISignonManager.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Classes\SignonManager.cs" />
-    <Compile Include="Classes\SocketHelper.cs" />
-    <Compile Include="Defs and Enums\SocketCommDefsAndEnums.cs" />
-    <Compile Include="Classes\SocketCommService.cs" />
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Workspace\Workspace.csproj">
+      <Project>{5444B25A-2302-446E-8BCE-35B9A9C331B3}</Project>
+      <Name>Workspace</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="IPMessengerIcon.ico">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

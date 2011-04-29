@@ -8,7 +8,7 @@ using System.Collections;
 namespace SocketCommunication.Classes
 {
 	[Serializable]
-	class UserInfo : ISerializable, IComparable
+	public class UserInfo : ISerializable, IComparable
 	{
 		#region Data Members
 

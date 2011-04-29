@@ -8,7 +8,7 @@ using System.Collections;
 namespace SocketCommunication.Classes
 {
 	[Serializable]
-	class TextMessageData : ISerializable
+	public class TextMessageData : ISerializable
 	{
 		#region Data Members
 

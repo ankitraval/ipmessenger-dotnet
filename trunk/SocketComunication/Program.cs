@@ -32,7 +32,7 @@ namespace SocketCommunication
 		#region static void Main(string[] args)
 		static void Main(string[] args)
 		{
-			SocketCommService.SubscribeForUSerInfos(new Program());
+			SocketCommService.SubscribeForUserInfos(new Program());
 			SocketCommService.SubscribeForTextMessages(new Program());
 
 			do
