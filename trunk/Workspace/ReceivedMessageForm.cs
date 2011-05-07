@@ -72,7 +72,7 @@ namespace Workspace
 				stringBuilder.AppendFormat(" [{0}]", ReceivedUserInfo.LogOnName);
 			}
 			stringBuilder.AppendFormat(" ({0})", ReceivedUserInfo.MachineName);
-			stringBuilder.AppendFormat("{0}at {1}", Environment.NewLine, ReceivedTextMessageData.ReceiptTime.ToLongDateString());
+			stringBuilder.AppendFormat("{0}at {1}", Environment.NewLine, ReceivedTextMessageData.ReceiptTime);
 
 			MessegeInfoLabel.Text = stringBuilder.ToString();
 			MessegeTextBox.Text = ReceivedTextMessageData.Text;

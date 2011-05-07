@@ -251,7 +251,8 @@ namespace Workspace
 				return;
 			}
 			Regex regex = new Regex("^", RegexOptions.Compiled | RegexOptions.Multiline);
-			regex.Replace(text, ">");
+			text = regex.Replace(text, "> ");
+			MessageTextBox.Text = text;
 		}
 		#endregion
 
